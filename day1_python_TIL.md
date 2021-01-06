@@ -1,4 +1,4 @@
-# TIL python day1
+# day1 python TIL
 
 ## Python 개요
 
