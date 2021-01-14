@@ -101,7 +101,7 @@ finally:
     conn.close()
 ```
 
-![image-20210114161653722](C:%5CUsers%5Chyeonssss%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20210114161653722.png)
+![09_1](md-images/09_1.JPG)
 
 
 
@@ -275,5 +275,4 @@ display(df)
 
 - chrome 확장 프로그램 json formatter를 받으면 이렇게 출력됨
 
-![image-20210114171905425](C:%5CUsers%5Chyeonssss%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20210114171905425.png)
-
+![09_2](md-images/09_2.JPG)

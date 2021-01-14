@@ -545,7 +545,7 @@ display(df.head())  # 상위 5개의 행을 출력
 print(df.shape)     # (9742, 3)
 ```
 
-![image-20210113175023261](C:%5CUsers%5Chyeonssss%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20210113175023261.png)
+![08_1](md-images/08_1.JPG)
 
 
 
