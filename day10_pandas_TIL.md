@@ -12,15 +12,15 @@
 
   - 생성: CSV, list, dict, Open API, Database
 
-            - indexing(열과 행의 indexing 구분)
-              
-              => indexing, slicing, fancy indexing, boolean indexing
-            
-            => loc[]
-            
-            - function(수학적 집계함수, 정렬함수, 유틸리티 함수)
-                      - merg
-     - merge(DataFrame 결합)
+  - indexing(열과 행의 indexing 구분)            
+    
+    => indexing, slicing, fancy indexing, boolean indexing
+    
+    => loc[]
+    
+  - function(수학적 집계함수, 정렬함수, 유틸리티 함수)
+
+  - merge(DataFrame 결합)
 
 
 
@@ -356,7 +356,7 @@ display(df2)
 # index를 기준으로 정렬
 display(df2.sort_index(axis=0, ascending=True)) # index 정렬
 '''
-			B	A	D	C
+		B	A	D	C
 2020-01-01	8	5	0	5
 2020-01-02	1	0	6	7
 2020-01-03	4	2	2	5
@@ -368,7 +368,7 @@ display(df2.sort_index(axis=0, ascending=True)) # index 정렬
 # 특정 column의 값을 기준으로 행을 정렬
 display(df2.sort_values(by=['B', 'A']))
 '''
-			B	A	D	C
+		B	A	D	C
 2020-01-02	1	0	6	7
 2020-01-05	1	7	0	7
 2020-01-04	2	4	7	4
@@ -477,18 +477,18 @@ df2 = pd.DataFrame(data2)
 display(df1)
 '''
 	학번	이름	학년
-0	1	홍길동		1
+0	1	홍길동	1
 1	2	신사임당	4
-2	3	아이유		1
-3	4	김연아		3
+2	3	아이유	1
+3	4	김연아	3
 '''
 
 display(df2)
 '''
 	학번	학과	학점
-0	1	컴퓨터		3.5
-1	2	철학		2.7
-2	4	심리		4.0
+0	1	컴퓨터	3.5
+1	2	철학	2.7
+2	4	심리	4.0
 3	5	영어영문	4.3
 '''
 
@@ -499,41 +499,40 @@ display(df2)
 display(pd.merge(df1, df2, on='학번', how='inner'))
 '''
 	학번	이름	학년	학과	학점
-0	1	홍길동		1	컴퓨터	3.5
+0	1	홍길동	1	컴퓨터	3.5
 1	2	신사임당	4	철학	2.7
-2	4	김연아		3	심리	4.0
+2	4	김연아	3	심리	4.0
 '''
 
 # how='outer': full outer join하라, 겹치지 않는 값은 nan으로 출력
 display(pd.merge(df1, df2, on='학번', how='outer'))
 '''
-
-	학번	이름	학년		학과		학점
-0	1	홍길동		1.0		컴퓨터		3.5
-1	2	신사임당	4.0		철학		2.7
-2	3	아이유		1.0		NaN		NaN
-3	4	김연아		3.0		심리		4.0
-4	5	NaN		NaN		영어영문	4.3
+	학번	이름	학년	학과	학점
+0	1	홍길동	1.0	컴퓨터	3.5
+1	2	신사임당	4.0	철학	2.7
+2	3	아이유	1.0	NaN	NaN
+3	4	김연아	3.0	심리	4.0
+4	5	NaN	NaN	영어영문	4.3
 '''
 
 # how='left': left outer join
 display(pd.merge(df1, df2, on='학번', how='left'))
 '''
-	학번	이름	학년		학과		학점
-0	1	홍길동		1	컴퓨터		3.5
-1	2	신사임당	4	철학		2.7
-2	3	아이유		1	NaN		NaN
-3	4	김연아		3	심리		4.0
+	학번	이름	학년	학과	학점
+0	1	홍길동	1	컴퓨터	3.5
+1	2	신사임당	4	철학	2.7
+2	3	아이유	1	NaN	NaN
+3	4	김연아	3	심리	4.0
 '''
 
 # how='left': right outer join
 display(pd.merge(df1, df2, on='학번', how='right'))
 '''
-	학번	이름		학년		학과		학점
-0	1	홍길동		1.0		컴퓨터		3.5
-1	2	신사임당	4.0		철학		2.7
-2	4	김연아		3.0		심리		4.0
-3	5	NaN		NaN		영어영문	4.3
+	학번	이름	학년	학과	학점
+0	1	홍길동	1.0	컴퓨터	3.5
+1	2	신사임당	4.0	철학	2.7
+2	4	김연아	3.0	심리	4.0
+3	5	NaN	NaN	영어영문	4.3
 '''
 ```
 
@@ -568,9 +567,9 @@ df2 = pd.DataFrame(data2)
 display(pd.merge(df1, df2, left_on='학번', right_on='학생번호', how='inner'))
 '''
 	학번	이름	학년	학생번호	학과	학점
-0	1	홍길동		1	1	컴퓨터	3.5
+0	1	홍길동	1	1	컴퓨터	3.5
 1	2	신사임당	4	2	철학	2.7
-2	4	김연아		3	4	심리	4.0
+2	4	김연아	3	4	심리	4.0
 '''
 ```
 
@@ -664,10 +663,10 @@ result = pd.merge(df1, df2,
 
 display(result)
 '''
-	이름		학년	학과	학점
-1	홍길동		1	컴퓨터	3.5
+	이름	학년	학과	학점
+1	홍길동	1	컴퓨터	3.5
 2	신사임당	4	철학	2.7
-4	김연아		3	심리	4.0
+4	김연아	3	심리	4.0
 '''
 ```
 
@@ -714,8 +713,8 @@ d	4	5
 display(df2)
 '''
 	three	four
-a	0		1
-c	2		3
+a	0	1
+c	2	3
 '''
 
 # concat(): 단순 결합, 데이터가 없으면 nan으로 붙음
@@ -726,10 +725,10 @@ result = pd.concat([df1, df2],
 display(result)
 '''
 	one	two	three	four
-a	0.0	1.0	0.0		1.0
-b	2.0	3.0	NaN		NaN
-c	NaN	NaN	2.0		3.0
-d	4.0	5.0	NaN		NaN
+a	0.0	1.0	0.0	1.0
+b	2.0	3.0	NaN	NaN
+c	NaN	NaN	2.0	3.0
+d	4.0	5.0	NaN	NaN
 '''
 ```
 
@@ -772,8 +771,8 @@ d	4
 display(df2)
 '''
 	three	four
-a	0		1
-c	2		3
+a	0	1
+c	2	3
 '''
 
 # concat(): 단순 결합, 데이터가 없으면 nan으로 붙음
@@ -785,11 +784,11 @@ result = pd.concat([df1, df2],
 display(result)
 '''
 	one	two	three	four
-0	0.0	1.0	NaN		NaN
-1	2.0	3.0	NaN		NaN
-2	4.0	5.0	NaN		NaN
-3	NaN	NaN	0.0		1.0
-4	NaN	NaN	2.0		3.0
+0	0.0	1.0	NaN	NaN
+1	2.0	3.0	NaN	NaN
+2	4.0	5.0	NaN	NaN
+3	NaN	NaN	0.0	1.0
+4	NaN	NaN	2.0	3.0
 '''
 ```
 
