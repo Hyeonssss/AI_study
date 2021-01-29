@@ -92,8 +92,10 @@
 
 - relation database (Table 구조)
 - 객체-관계형 database 
+  
   - 정형 데이터 처리
 - 몽고 DB
+  
   - 비정형 데이터를 위한 database
 
 
@@ -251,3 +253,6 @@
   python manage.py migrate
 
   python manage.py runserver
+
+
+

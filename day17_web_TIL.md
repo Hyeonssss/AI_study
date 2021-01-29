@@ -455,6 +455,14 @@ admin.site.register(Choice)
 
 
 
+##### anaconda prompt
+
+1. python manage.py createsuperuser
+
+   localhost:8000/admin 페이지에 접속하기 위한 superuser 계정 생성
+
+
+
 ##### localhost:8000/admin
 
 1. polls 폴더 속 Choices, Questions 테이블이 생성된 것을 확인
@@ -503,13 +511,15 @@ def index(request):
 
 ##### index.html
 
-1. Django의 template 표현법
+1. polls 폴더 내에 templates 폴더 생성 후 그 안에 html 파일 생성
+
+2. Django의 template 표현법
 
    {% 파이썬 로직 %}
 
    {{ 문자열 리턴 변수 }}
 
-2. if문 
+3. if문 
 
    {% if %}
 
@@ -517,7 +527,7 @@ def index(request):
 
    {% endif %}
 
-3. for문
+4. for문
 
    {% for i in x %}
 
@@ -533,7 +543,7 @@ def index(request):
 <body>
     {% if q_list %}
         <ul>
-            {% for question in q_lisst %}
+            {% for question in q_list %}
                 <li><a href="/polls/{{ question.id }}">{{ question.question_text }}</a></li>
             {% endfor %}
         </ul>
