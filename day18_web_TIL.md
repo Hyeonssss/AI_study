@@ -610,12 +610,16 @@ admin.site.register(Choice)
 #### polls\urls.py
 
 ```python
-from django.contrib import admin
-from polls.models import Question, Choice
+from django.urls import path
+from . import views
 
-# Register your models here.
-admin.site.register(Question)
-admin.site.register(Choice)
+app_name = 'polls'
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('<int:question_id>/', views.detail, name='detail'),
+    path('<int:question_id>/vote/', views.vote, name='vote'),
+    path('<int:question_id>/results/', views.results, name='results')
+]
 ```
 
 
