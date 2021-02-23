@@ -40,7 +40,7 @@
 
 - 고전적 선형 회귀모델
 
-![image-20210223093757668](C:%5CUsers%5Chyeonssss%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20210223093757668.png)
+![image-20210223093757668](md-images/image-20210223093757668.png)
 
 ​	=> y = B0 +B1x1 => y = ax + b
 
@@ -94,7 +94,7 @@
 
 ![image-20210223111450308](C:%5CUsers%5Chyeonssss%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20210223111450308.png)
 
-![image-20210223112550443](C:%5CUsers%5Chyeonssss%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20210223112550443.png)
+![image-20210223112550443](md-images/image-20210223112550443.png)
 
 
 
@@ -104,7 +104,7 @@
 
 - 특정 지점에서 미분값이 0이 되는 곳이 가장 최소값
 
-![image-20210223114406273](C:%5CUsers%5Chyeonssss%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20210223114406273.png)
+![image-20210223114406273](md-images/image-20210223114406273.png)
 
 
 
@@ -124,11 +124,11 @@
 
   loss function은 최소제곱법으로 만든다
 
-  ![image-20210223131754983](C:%5CUsers%5Chyeonssss%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20210223131754983.png)
+  ![image-20210223131754983](md-images/image-20210223131754983.png)
 
 - 경사하강법(Gradient Descent Algorithm)을 이용해서 최적의 W와 b를 찾아요
 
-![image-20210223132906961](C:%5CUsers%5Chyeonssss%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20210223132906961.png)
+![image-20210223132906961](md-images/image-20210223132906961.png)
 
 - 1 epoch : 전체 데이터를 이용해서 1번 학습하는 것
 
@@ -156,7 +156,7 @@
 
 - X * W + b = Y
 
-![image-20210223142100173](C:%5CUsers%5Chyeonssss%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20210223142100173.png)
+![image-20210223142100173](md-images/image-20210223142100173.png)
 
 
 
