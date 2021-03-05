@@ -2,117 +2,80 @@
 
 
 
-##### 데이터 로드
+##### Training Data 전처리 및 학습
 
 ```python
 import numpy as np
 import pandas as pd
-
-df = pd.read_csv('./data/titanic/train.csv')
-display(df)
-
-## 데이터 전처리 진행
-
-# PassengerId : 그대로 사용, 종속변수에 영향을 미치지 않음
-#               넣어봤자 Overfitting 문제만 생김
-# Survived : 종속변수(lable) 0과 1로 되어있으니 그냥 씀
-# Pclass : 1, 2, 3 숫자로 되어있음
-# Name : 이름은 생존 여부에 영향을 미치지 않음
-# Sex : male, female 숫자로 변환, 생존 여부에 가장 크게 영향
-# Age : 결측치가 있음, 삭제보다는 값을 대체하는 게 중요
-#       전체 사람의 평균으로 일단 사용
-#       MISS인 사람의 평균으로 대체(결혼한 여성)
-#       0~99범위를 가지는 실수값
-#       0~10: 소아(0), 11~25: 청년(1), 26~49: 중년(2), 50~: 노년(3)
-# Ticket : 포함시키지 않아도 됨
-# Cabin : 객실번호 (제외, NaN을 수정해서 사용할지는 결정)
-# Embarked : 데이터분석(상관분석) 해보면 어디서 탔는지가 영향 미침
-```
-
-![image-20210304174410327](md-images/image-20210304174410327.png)
-
-
-
-
-
-##### 데이터 전처리 및 요약
-
-```python
-import warnings # warning을 출력하지 않도록 처리
-
-# warning off
-warnings.filterwarnings(action='ignore')
-
-## 데이터 전처리
-# 사용할 컬럼만 추출
-training_data = df[['Pclass','Sex','Age','Embarked','Survived']]
-
-# 성별 데이터 숫자로 변경
-training_data['Sex'] = training_data['Sex'].map({'male':0,
-                                                 'female':1})
-# 탑승지역 데이터 숫자로 변경
-training_data['Embarked'] = training_data['Embarked'].map({'C':0,
-                                                           'Q':1,
-                                                           'S':2,
-                                                          np.nan:2})
-# Age의 null값을 전체 나이 평균값으로 대체
-training_data = training_data.fillna(training_data['Age'].mean())
-
-# Age값을 범주화
-training_data['Age_cut'] = 0
-training_data['Age_cut'] = pd.cut(training_data.Age, bins=[0,16,32,48,64,80],
-                                                   labels=[0,1,2,3,4])
-
-# Age 컬럼 제거
-del training_data['Age']
-
-# 데이터 프레임 순서 변경
-training_data = training_data[['Pclass','Sex','Age_cut','Embarked','Survived']]
-display(training_data)
-
-## 요약 ##
-# Pclass : 1- 1등석 2- 2등석 3- 3등석
-# Sex : 0- male 1- female
-# Age_cut : 0- 0~16  (어린이)
-#           1- 17~32 (청소년)
-#           2- 33~48 (청년)
-#           3- 49~64 (중년)
-#           4- 65~80 (노년)
-# Embarked : 0- C=Cherbourg, 1- Q=Queenstown, 2- S=Southampton
-# survived : 0- 사망, 1- 생존
-```
-
-![image-20210304174445239](md-images/image-20210304174445239.png)
-
-
-
-
-
-##### 모델링 및 학습
-
-```python
-import numpy as np
-import pandas as pd
-import warnings # warning을 출력하지 않도록 처리
 import tensorflow as tf
-from sklearn.preprocessing import MinMaxScaler
 
-## 정규화
-x_data = training_data.drop('Survived', axis=1).values
-t_data = training_data['Survived'].values.reshape(-1,1)
+## Raw Data Loading
+df = pd.read_csv('./data/titanic/train.csv')
 
-scaler_x = MinMaxScaler()
-scaler_x.fit(x_data)
-norm_x_data = scaler_x.transform(x_data)
+# 학습에 필요없는 컬럼 삭제
+df.drop(['PassengerId','Name','Ticket','Fare','Cabin'],
+         axis=1, inplace=True)
 
 
-## placeholder
-X = tf.placeholder(shape=[None,4], dtype=tf.float32)
+# 성별 처리
+gender_mapping = {'male': 0, 'female': 1}
+df['Sex'] = df['Sex'].map(gender_mapping)
+
+# 가족 처리
+df['Family'] = df['SibSp'] + df['Parch']
+df.drop(['SibSp','Parch'], axis=1, inplace=True)
+
+# Embarked 결측치 처리
+df['Embarked'] = df['Embarked'].fillna('Q')
+# Embarked 문자를 숫자로 변환
+embarked_mapping = {'S': 0, 'C': 1, 'Q': 2}
+df['Embarked'] = df['Embarked'].map(embarked_mapping)
+
+# Age 결측치 처리
+df['Age'] = df['Age'].fillna(df['Age'].mean())
+# Age Binning 처리 (범주화, Numerical -> Categorical)
+df.loc[df['Age'] < 8, 'Age'] = 0 
+df.loc[(df['Age'] >= 8) & (df['Age'] < 20), 'Age'] = 1 
+df.loc[(df['Age'] >= 20) & (df['Age'] < 65), 'Age'] = 2 
+df.loc[df['Age'] >= 65, 'Age'] = 3
+
+
+## 학습과 validation을 수행
+# validation data로 우리 모델을 검증하겠다
+# 데이터를 7:3 비율로 Training과 Validation으로 분리
+train_data = df.iloc[:int(df.shape[0]*0.7)] # 623 × 6
+val_data = df.iloc[int(df.shape[0]*0.7):]   # 268 × 6
+
+
+## Training Data Set
+train_x_data = train_data.drop(['Survived'], axis=1).values
+train_t_data = train_data['Survived'].values.reshape(-1,1)
+
+
+## Validation Data Set
+val_x_data = val_data.drop(['Survived'], axis=1).values
+val_t_data = val_data['Survived'].values.reshape(-1,1)
+
+
+## 정규화 (Normalization)
+train_scaler_x = MinMaxScaler()
+train_scaler_x.fit(train_x_data)
+train_norm_x_data = train_scaler_x.transform(train_x_data)
+
+val_scaler_x = MinMaxScaler()
+val_scaler_x.fit(val_x_data)
+val_norm_x_data = val_scaler_x.transform(val_x_data)
+
+
+########## Tensorflow 구현
+
+## Placeholder
+X = tf.placeholder(shape=[None,5], dtype=tf.float32)
 T = tf.placeholder(shape=[None,1], dtype=tf.float32)
 
 
-## Weight & bias
-W = tf.Variable(tf.random.normal([4,1]), name='weight')
+## Weighht & bias
+W = tf.Variable(tf.random.normal([5,1]), name='weight')
 b = tf.Variable(tf.random.normal([1]), name='bias')
 
 
@@ -121,9 +84,10 @@ logit = tf.matmul(X,W) + b
 H = tf.sigmoid(logit)
 
 
-## loss function(cross entropy)
+## loss function
 loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=logit,
                                                               labels=T))
+
 
 ## train
 train = tf.train.GradientDescentOptimizer(learning_rate=1e-4).minimize(loss)
@@ -136,79 +100,110 @@ sess.run(tf.global_variables_initializer())
 
 ## 학습
 for step in range(300000):
-    
     _, W_val, b_val, loss_val = sess.run([train,W,b,loss],
-                                          feed_dict={X:norm_x_data,
-                                                     T:t_data})
+                                         feed_dict={X: train_norm_x_data,
+                                                    T: train_t_data})
     
     if step % 30000 == 0:
-        print(f'W: {W_val.ravel()}, b: {b_val}, loss: {loss_val}')
+        print(f'W: {W_val}, b: {b_val}, loss: {loss_val}')
 ```
 
-![image-20210304174528449](md-images/image-20210304174528449.png)
+![image-20210305171358644](md-images/image-20210305171358644.png)
 
 
 
 
 
-##### test 데이터 전처리 및 예측
+##### 모델의 정확도 측정
+
+```python
+# 정확도 측정(Accuracy) 측정
+predict = tf.cast(H > 0.5, dtype=tf.float32)
+correct = tf.equal(predict, T)
+accuracy = tf.reduce_mean(tf.cast(correct,dtype=tf.float32))
+
+accuracy_val = sess.run(accuracy, feed_dict={X: val_norm_x_data,
+                                             T: val_t_data})
+
+print(f'모델의 정확도: {accuracy_val}')
+
+# 제출파일 만들고 제출
+```
+
+![image-20210305171512365](md-images/image-20210305171512365.png)
+
+
+
+
+
+##### 테스트 데이터 전처리 및 결과 도출
 
 ```python
 import numpy as np
 import pandas as pd
-import warnings # warning을 출력하지 않도록 처리
 import tensorflow as tf
-from sklearn.preprocessing import MinMaxScaler
 
-
+## Raw Data Loading
+org_t_df = pd.read_csv('./data/titanic/test.csv')
 t_df = pd.read_csv('./data/titanic/test.csv')
 
+# 학습에 필요없는 컬럼 삭제
+t_df.drop(['PassengerId','Name','Ticket','Fare','Cabin'],
+             axis=1, inplace=True)
 
-# warning off
-warnings.filterwarnings(action='ignore')
 
-## 데이터 전처리
-# 사용할 컬럼만 추출
-test_data = t_df[['Pclass','Sex','Age','Embarked']]
-# 성별 데이터 숫자로 변경
-test_data['Sex'] = test_data['Sex'].map({'male':0,
-                                                 'female':1})
-# 탑승지역 데이터 숫자로 변경
-test_data['Embarked'] = test_data['Embarked'].map({'C':0,
-                                                   'Q':1,
-                                                   'S':2,
-                                                  np.nan:2})
-# Age의 null값을 전체 나이 평균값으로 대체
-test_data = test_data.fillna(test_data['Age'].mean())
+# 성별 처리
+gender_mapping = {'male': 0, 'female': 1}
+t_df['Sex'] = t_df['Sex'].map(gender_mapping)
 
-# Age값을 범주화
-test_data['Age_cut'] = 0
-test_data['Age_cut'] = pd.cut(test_data.Age, bins=[0,16,32,48,64,80],
-                                             labels=[0,1,2,3,4])
+# 가족 처리
+t_df['Family'] = t_df['SibSp'] + t_df['Parch']
+t_df.drop(['SibSp','Parch'], axis=1, inplace=True)
 
-# Age 컬럼 제거
-del test_data['Age']
+# Embarked 결측치 처리
+t_df['Embarked'] = t_df['Embarked'].fillna('Q')
+# Embarked 문자를 숫자로 변환
+embarked_mapping = {'S': 0, 'C': 1, 'Q': 2}
+t_df['Embarked'] = t_df['Embarked'].map(embarked_mapping)
 
-# 데이터 프레임 순서 변경
-test_data = test_data[['Pclass','Sex','Age_cut','Embarked']]
+# Age 결측치 처리
+t_df['Age'] = t_df['Age'].fillna(df['Age'].mean())
+# Age Binning 처리 (범주화, Numerical -> Categorical)
+t_df.loc[t_df['Age'] < 8, 'Age'] = 0 
+t_df.loc[(t_df['Age'] >= 8) & (t_df['Age'] < 20), 'Age'] = 1 
+t_df.loc[(t_df['Age'] >= 20) & (t_df['Age'] < 65), 'Age'] = 2 
+t_df.loc[t_df['Age'] >= 65, 'Age'] = 3
+
+
+## Training Data Set
+test_data = t_df.values
 display(test_data)
+## 정규화 (Normalization)
+scaled_test_data = train_scaler_x.transform(test_data.reshape(-1,5))
 
-## 정규화
-test_x_data = test_data.values
-
-scaled_test_data = scaler_x.transform(test_x_data.reshape(-1,4))
-result = sess.run(H, feed_dict={X:scaled_test_data})
+test_result = sess.run(H, feed_dict={X:scaled_test_data})
 
 answer = pd.DataFrame({
-    'PassengerId': t_df['PassengerId'].ravel(),
-    'Survived': result.ravel()
+    'PassengerId': org_t_df['PassengerId'].ravel(),
+    'Survived': test_result.ravel()
 })
 
 answer.loc[answer['Survived']>=0.5,'Survived'] = 1
 answer.loc[answer['Survived']<0.5,'Survived'] = 0
-answer.astype(int)
+answer = answer.astype(int)
 print(answer)
-answer.to_csv('answer.csv', index=False)
+
+
+answer.to_csv('answer3.csv', index=False)
+# 제출파일 만들고 제출
 ```
 
-![image-20210304174611412](md-images/image-20210304174611412.png)
+![image-20210305171745433](md-images/image-20210305171745433.png)
+
+
+
+
+
+##### kaggle 제출 결과
+
+![image-20210305171037229](md-images/image-20210305171037229.png)
