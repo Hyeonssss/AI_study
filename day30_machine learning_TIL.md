@@ -175,7 +175,7 @@ for step in range(30000):
         print(f'W: {W_val}, b: {b_val}, loss: {loss_val}')
 ```
 
-![image-20210305172031338](md-images/image-20210305172031338.png)
+![image-20210305172629284](md-images/image-20210305172629284.png)
 
 
 
@@ -188,6 +188,7 @@ weight = 78
 my_state = [[height,weight]]
 
 result = sess.run(H, feed_dict={X:scaler_x.transform(my_state)})
-print(result)  # 2 => 과체중 ?? 확인 필요
+print(result) 
 ```
 
+![image-20210305172637928](md-images/image-20210305172637928.png)
